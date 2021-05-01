@@ -68,12 +68,11 @@ class UI {
   getBagButton() {
     const buttons = [...document.querySelectorAll(".bag-btn")];
     // const buttons = document.querySelector(".bag-btn");
-    console.log(buttons);
+    // console.log(buttons);
     buttonsDOM = buttons;
     buttons.forEach((button) => {
       // console.log(button);
       // console.log(button.dataset.id);
-      console.log("refresh");
       let id = button.dataset.id;
       let inCart = cart.find((item) => {
         item.id === id;
@@ -87,6 +86,9 @@ class UI {
         event.target.innerText = "In Cart";
         event.target.disabled = true;
         // get product from products
+        let cartItem = Storage.getProduct(id);
+        console.log(id);
+        console.log(cartItem);
         // add product to the cart
         // save cart in local storage
         // set cart values
@@ -102,7 +104,19 @@ class Storage {
   static saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
   }
-  static;
+  static getProduct(id) {
+    let products = JSON.parse(localStorage.getItem("products"));
+    console.log(products);
+    let result = products.find((product) => {
+      product.id === id;
+    });
+    console.log(result);
+    // return products.find((product) => {
+    //   console.log(product);
+    //   product.id === id;
+    // });
+    return result;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
