@@ -107,15 +107,25 @@ class Storage {
   static getProduct(id) {
     let products = JSON.parse(localStorage.getItem("products"));
     console.log(products);
-    let result = products.find((product) => {
-      product.id === id;
-    });
-    console.log(result);
+    // console.log(products[0]);
+    for (let i = 0; i < products.length; i++) {
+      //finding products -
+      if (products[i].id === id) {
+        let foundResult = products[i];
+        console.log(foundResult);
+        return foundResult;
+      }
+    }
+    // let result = products.find((product) => {
+    //   product.id === id;
+    // });
+    // console.log(result);
     // return products.find((product) => {
     //   console.log(product);
     //   product.id === id;
     // });
-    return result;
+    // return result;
+    return foundResult;
   }
 }
 
