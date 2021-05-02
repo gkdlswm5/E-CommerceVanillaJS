@@ -86,9 +86,12 @@ class UI {
         event.target.innerText = "In Cart";
         event.target.disabled = true;
         // get product from products
-        let cartItem = Storage.getProduct(id);
-        console.log(id);
-        console.log(cartItem);
+        let cartItem = { ...Storage.getProduct(id), amount: 1 };
+        cart = [...cart, cartItem];
+        Storage.saveCart(cart);
+        // logs item
+        // console.log(id);
+        // console.log(cartItem);
         // add product to the cart
         // save cart in local storage
         // set cart values
@@ -104,15 +107,16 @@ class Storage {
   static saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
   }
+
   static getProduct(id) {
     let products = JSON.parse(localStorage.getItem("products"));
-    console.log(products);
-    // console.log(products[0]);
+    // logs products in an array
+    // console.log(products);
     for (let i = 0; i < products.length; i++) {
       //finding products -
       if (products[i].id === id) {
         let foundResult = products[i];
-        console.log(foundResult);
+        // console.log(foundResult);
         return foundResult;
       }
     }
@@ -126,6 +130,10 @@ class Storage {
     // });
     // return result;
     return foundResult;
+  }
+
+  static saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
   }
 }
 
