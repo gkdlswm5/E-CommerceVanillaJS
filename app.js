@@ -87,18 +87,64 @@ class UI {
         event.target.disabled = true;
         // get product from products
         let cartItem = { ...Storage.getProduct(id), amount: 1 };
-        cart = [...cart, cartItem];
-        Storage.saveCart(cart);
+
         // logs item
         // console.log(id);
         // console.log(cartItem);
+
         // add product to the cart
+        cart = [...cart, cartItem];
+
         // save cart in local storage
+        Storage.saveCart(cart);
+
         // set cart values
+        this.setCartValues(cart);
+
         // display cart item
+        this.addCartItem(cartItem);
+
         // show the cart
+        this.showCart();
       });
     });
+  }
+
+  setCartValues(cart) {
+    let tempTotal = 0;
+    let itemsTotal = 0;
+    cart.map((item) => {
+      tempTotal += item.price * item.amount;
+      itemsTotal += item.amount;
+    });
+    cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
+    cartItems.innerText = itemsTotal;
+    console.log(cartTotal, itemsTotal);
+  }
+
+  addCartItem(item) {
+    console.log(item);
+    const div = document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML = `
+    <img src=${item.image} alt="product" />
+    <div>
+        <h4>${item.title}</h4>
+        <h5>${item.price}</h5>
+        <span class="remove- item" data-id=${item.id}>remove</span>
+    </div>
+    <div>
+        <i class="fas fa-chevron-up" data-id=${item.id}></i>
+        <p class="item-amount">${item.amount}</p>
+        <i class="fas fa-chevron-down" data-id=${item.id}></i>
+    </div>
+    `;
+    cartContent.appendChild(div);
+  }
+
+  showCart() {
+    cartOverlay.classList.add("transparentBcg");
+    cartDOM.classList.add("showCart");
   }
 }
 
