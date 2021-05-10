@@ -27,8 +27,10 @@ class Products {
         const { title, price } = item.fields;
         const { id } = item.sys;
         const image = item.fields.image.fields.file.url;
-        return { title, price, id, image };
+        const inCart = false;
+        return { title, price, id, image, inCart };
       });
+      console.log(products);
       return products;
     } catch (error) {
       console.log(error);
@@ -50,7 +52,7 @@ class UI {
                 alt="product"
                 class="product-img"
                 />
-                <button class="bag-btn" data-id=${product.id}>
+                <button class="bag-btn" data-id=${product.id} data-cart=${product.inCart}>
                     <i class="fas fa-shopping-cart">
                         add to bag
                     </i>
@@ -74,9 +76,9 @@ class UI {
       // console.log(button);
       // console.log(button.dataset.id);
       let id = button.dataset.id;
-      let inCart = cart.find((item) => {
-        item.id === id;
-      });
+
+      let inCart = cart.find((item) => item.id === id);
+
       if (inCart) {
         button.innerText = "In Cart";
         button.disabled = true;
@@ -85,12 +87,14 @@ class UI {
         // console.log(event);
         event.target.innerText = "In Cart";
         event.target.disabled = true;
+        console.log(event.target);
+
         // get product from products
         let cartItem = { ...Storage.getProduct(id), amount: 1 };
 
         // logs item
         // console.log(id);
-        console.log(cartItem);
+        // console.log(cartItem);
 
         // add product to the cart
         // if (cart)
