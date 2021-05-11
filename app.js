@@ -1,5 +1,4 @@
-i; //variables
-
+//variables
 const cartBtn = document.querySelector(".cart-btn");
 const closeCartBtn = document.querySelector(".close-cart");
 const clearCartBtn = document.querySelector(".clear-cart");
@@ -30,7 +29,7 @@ class Products {
         const inCart = false;
         return { title, price, id, image, inCart };
       });
-      console.log(products);
+      // console.log(products);
       return products;
     } catch (error) {
       console.log(error);
@@ -42,7 +41,7 @@ class Products {
 class UI {
   //retreiving data and display via DOM manipulation
   displayProducts(products) {
-    console.log(products);
+    // console.log(products);
     let result = "";
     products.forEach((product) => {
       result += `
@@ -87,7 +86,7 @@ class UI {
         // console.log(event);
         event.target.innerText = "In Cart";
         event.target.disabled = true;
-        console.log(event.target);
+        // console.log(event.target);
 
         // get product from products
         let cartItem = { ...Storage.getProduct(id), amount: 1 };
@@ -99,7 +98,7 @@ class UI {
         // add product to the cart
         // if (cart)
         cart = [...cart, cartItem];
-        console.log(cart);
+        // console.log(cart);
         // save cart in local storage
         Storage.saveCart(cart);
 
@@ -136,7 +135,7 @@ class UI {
     <div>
         <h4>${item.title}</h4>
         <h5>${item.price}</h5>
-        <span class="remove- item" data-id=${item.id}>remove</span>
+        <span class="remove-item" data-id=${item.id}>remove</span>
     </div>
     <div>
         <i class="fas fa-chevron-up" data-id=${item.id}></i>
@@ -175,13 +174,44 @@ class UI {
     clearCartBtn.addEventListener("click", () => {
       this.clearCart();
     });
-    // cart functionality
+    // cart functionality add / remove item
+    cartContent.addEventListener("click", (event) => {
+      if (event.target.classList.contains("remove-item")) {
+        let removeItem = event.target;
+        let id = removeItem.dataset.id;
+        cartContent.removeChild(removeItem.parentElement.parentElement);
+        this.removeItem(id);
+      } else if (event.target.classList.contains("fa-chevron-up")) {
+        let addAmount = event.target;
+        let id = addAmount.dataset.id;
+        let tempItem = cart.find((item) => item.id === id);
+        tempItem.amount = tempItem.amount + 1;
+        Storage.saveCart(cart);
+        this.setCartValues(cart);
+        addAmount.nextElementSibling.innerText = tempItem.amount;
+      } else if (event.target.classList.contains("fa-chevron-down")) {
+        let minusAmount = event.target;
+        let id = minusAmount.dataset.id;
+        let tempItem = cart.find((item) => item.id === id);
+        if (tempItem.amount > 0) {
+          tempItem.amount = tempItem.amount - 1;
+        }
+        Storage.saveCart(cart);
+        this.setCartValues(cart);
+        minusAmount.previousElementSibling.innerText = tempItem.amount;
+      }
+    });
   }
 
   clearCart() {
     let cartItems = cart.map((item) => item.id);
     // console.log(cartItems);
     cartItems.forEach((id) => this.removeItem(id));
+    console.log(cartContent.children);
+    while (cartContent.children.length > 0) {
+      cartContent.removeChild(cartContent.children[0]);
+    }
+    this.hideCart();
   }
 
   removeItem(id) {
@@ -190,7 +220,11 @@ class UI {
     Storage.saveCart(cart);
     let button = this.getSingleButton(id);
     button.disabled = false;
-    button.innerHTML = `<i class="fas fa-shopping-cart></i>add to cart`;
+    // button.innerHTML = `<i class="fas fa-shopping-cart>add to cart</i>`;
+    button.innerHTML = `
+    <i class="fas fa-shopping-cart">
+    add to bag
+    </i>`;
   }
 
   getSingleButton(id) {
